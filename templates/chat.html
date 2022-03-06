@@ -42,8 +42,7 @@
 
     const handleSubmit = (e) => {
         const target = e.target.elements[0];
-        const value = (target.value);
-        socket.send(value);
+        socket.send(target.value);
         target.value = '';
     }
 </script>
