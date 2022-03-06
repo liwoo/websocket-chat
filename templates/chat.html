@@ -15,7 +15,12 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-<div x-data="messages">
+<div x-data="{
+    data: [],
+    add(message) {
+        this.data.push(message);
+    }
+}">
     <ul @message-added.window="data.push($event.detail)">
         <template x-for="message in data">
             <li x-text="message"></li>
@@ -30,29 +35,21 @@
 <script>
     const socket = new WebSocket('ws://localhost:5050/room');
 
+    socket.onopen = () => {
+        window.dispatchEvent(new CustomEvent('message-added', {detail: 'connected'}));
+    };
+    socket.onmessage = (event) => {
+        window.dispatchEvent(new CustomEvent('message-added', {detail: event.data}));
+    };
+    socket.onclose = () => {
+        window.dispatchEvent(new CustomEvent('message-added', {detail: 'disconnected'}));
+    };
+
     const handleSubmit = (e) => {
         const target = e.target.elements[0];
         const value = (target.value);
         socket.send(value);
         target.value = '';
     }
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('messages', () => ({
-            data: [],
-            add(message) {
-                this.data.push(message);
-            }
-        }))
-
-        socket.onopen = () => {
-            window.dispatchEvent(new CustomEvent('message-added', {detail: 'connected'}));
-        };
-        socket.onmessage = (event) => {
-            window.dispatchEvent(new CustomEvent('message-added', {detail: event.data}));
-        };
-        socket.onclose = () => {
-            window.dispatchEvent(new CustomEvent('message-added', {detail: 'disconnected'}));
-        };
-    })
 </script>
 </html>
