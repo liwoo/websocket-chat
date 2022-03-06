@@ -42,7 +42,3 @@ func (c *client) write() {
 		}
 	}
 }
-
-func main() {
-
-}
