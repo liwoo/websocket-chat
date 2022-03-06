@@ -15,12 +15,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-<div x-data="{
-    data: [],
-    add(message) {
-        this.data.push(message);
-    }
-}">
+<div x-data="{ data: [] }">
     <ul @message-added.window="data.push($event.detail)">
         <template x-for="message in data">
             <li x-text="message"></li>
